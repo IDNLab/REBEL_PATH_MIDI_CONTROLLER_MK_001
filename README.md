@@ -9,10 +9,18 @@ Un controller MIDI hardware basato su Arduino che legge 16 potenziometri tramite
 - Due pulsanti per cambiare lo shift dei Control Change (CC)
 - Invio di messaggi MIDI CC via USB (compatibile con Arduino Leonardo / Micro o altre schede con MIDIUSB)
 - Filtro anti-jitter e smoothing per valori potenziometro stabili
+- **Supporto per molteplici schede di controllo Arduino**
 
 ## Struttura del progetto
 
-- `SWF/INO/midicontroller_mark_001.ino`: sketch Arduino principale
+### Script Arduino (SWF/INO/)
+
+Gli script nella cartella `SWF/INO/` sono stati adattati per diverse schede di controllo:
+
+- `midicontroller_mark_001.ino` - Sketch principale (versione base)
+- `midicontroller_mark_001_Arduino_Leonardo.ino` - Versione ottimizzata per **Arduino Leonardo**
+
+**Nota**: Ogni file è specifico per la scheda di controllo indicata nel nome. Scegli lo script compatibile con la tua scheda.
 
 ## Requisiti software
 
@@ -21,6 +29,22 @@ Un controller MIDI hardware basato su Arduino che legge 16 potenziometri tramite
   - `MIDIUSB`
   - `Wire`
   - `LiquidCrystal_I2C`
+
+## Compatibilità con le schede
+
+Questo progetto supporta schede Arduino con:
+- Supporto per MIDIUSB (nativamente o tramite libreria)
+- Almeno 4 pin digitali disponibili (per il multiplexer S0-S3)
+- Almeno 1 ingresso analogico (A0)
+- 2 pin digitali aggiuntivi per i pulsanti
+- Supporto I2C per il display LCD
+
+### Schede testate
+
+- **Arduino Leonardo** ✓ (supporto MIDIUSB nativo)
+- **Arduino Micro** ✓ (supporto MIDIUSB nativo)
+
+Per altre schede, consulta la documentazione della libreria MIDIUSB.
 
 ## Pin e connessioni
 
@@ -54,13 +78,31 @@ Un controller MIDI hardware basato su Arduino che legge 16 potenziometri tramite
 
 ## Upload
 
-1. Apri `SWF/INO/midicontroller_mark_001.ino` nell'Arduino IDE
-2. Seleziona la scheda compatibile con MIDIUSB (es. Arduino Leonardo o Pro Micro)
-3. Seleziona la porta USB corretta
-4. Compila e carica lo sketch
+1. **Seleziona lo script corretto** in base alla tua scheda Arduino
+2. Apri lo script nella cartella `SWF/INO/` con l'Arduino IDE
+3. Seleziona la scheda corretta dal menu **Strumenti > Scheda**
+4. Seleziona la porta USB corretta
+5. Compila e carica lo sketch
+
+## Configurazione personalizzata
+
+Se utilizzi una scheda diversa da quelle testate, puoi adattare lo script modificando i pin nel namespace `Config`:
+
+```cpp
+namespace Config {
+  const uint8_t S0 = 8;               // Personalizza questi pin
+  const uint8_t S1 = 9;               // in base alla tua scheda
+  const uint8_t S2 = 10;
+  const uint8_t S3 = 11;
+  const uint8_t BTN_UP = 7;
+  const uint8_t BTN_DOWN = 6;
+  const uint8_t MUX_SIG = A0;
+}
+```
 
 ## Note
 
 - Assicurati che l'indirizzo I2C del display sia corretto; se il display non si accende, verifica l'indirizzo e aggiorna `Config::LCD_ADDR`
-- Se usi un'altra scheda, verifica la compatibilità con la libreria `MIDIUSB`
+- Verifica la compatibilità della tua scheda con la libreria `MIDIUSB` prima di caricare il codice
+- Se necessario, crea una versione personalizzata dello script per la tua scheda seguendo il pattern dei file esistenti
 - Il codice è già predisposto per ridurre il jitter dei potenziometri con una soglia minima (`DEADZONE`) e smoothing
