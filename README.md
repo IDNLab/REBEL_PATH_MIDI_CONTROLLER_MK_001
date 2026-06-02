@@ -44,8 +44,6 @@ Questo progetto supporta schede Arduino con:
 - **Arduino Leonardo** ✓ (supporto MIDIUSB nativo)
 - **Arduino Micro** ✓ (supporto MIDIUSB nativo)
 
-Per altre schede, consulta la documentazione della libreria MIDIUSB.
-
 ## Pin e connessioni
 
 ### Multiplexer 16 canali
@@ -53,19 +51,19 @@ Per altre schede, consulta la documentazione della libreria MIDIUSB.
 - `S0` -> digitale 8
 - `S1` -> digitale 9
 - `S2` -> digitale 10
-- `S3` -> digitale 11
+- `S3` -> digitale 11 (o 15 du pro Micro)
 - Segnale di uscita del MUX -> analogico `A0`
 
 ### Display LCD I2C
 
 - SDA -> pin I2C SDA della scheda
 - SCL -> pin I2C SCL della scheda
-- Indirizzo I2C configurato in `0x27`
+- Indirizzo I2C configurato in `0x27` 
 
 ### Pulsanti
 
-- `BTN_UP` -> digitale 7 (pulsante incremento shift)
-- `BTN_DOWN` -> digitale 6 (pulsante decremento shift)
+- `BTN_UP` -> digitale 7 (5 su pro Micro) (pulsante incremento shift)
+- `BTN_DOWN` -> digitale 6 (4 su pro Micro) (pulsante decremento shift)
 - Entrambi i pulsanti usano `INPUT_PULLUP`
 
 ## Funzionamento
@@ -84,25 +82,9 @@ Per altre schede, consulta la documentazione della libreria MIDIUSB.
 4. Seleziona la porta USB corretta
 5. Compila e carica lo sketch
 
-## Configurazione personalizzata
 
-Se utilizzi una scheda diversa da quelle testate, puoi adattare lo script modificando i pin nel namespace `Config`:
-
-```cpp
-namespace Config {
-  const uint8_t S0 = 8;               // Personalizza questi pin
-  const uint8_t S1 = 9;               // in base alla tua scheda
-  const uint8_t S2 = 10;
-  const uint8_t S3 = 11;
-  const uint8_t BTN_UP = 7;
-  const uint8_t BTN_DOWN = 6;
-  const uint8_t MUX_SIG = A0;
-}
-```
 
 ## Note
 
 - Assicurati che l'indirizzo I2C del display sia corretto; se il display non si accende, verifica l'indirizzo e aggiorna `Config::LCD_ADDR`
-- Verifica la compatibilità della tua scheda con la libreria `MIDIUSB` prima di caricare il codice
-- Se necessario, crea una versione personalizzata dello script per la tua scheda seguendo il pattern dei file esistenti
 - Il codice è già predisposto per ridurre il jitter dei potenziometri con una soglia minima (`DEADZONE`) e smoothing
